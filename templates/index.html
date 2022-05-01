@@ -720,50 +720,100 @@
         });
 
         // Pop up
-        $('.tm-gallery').magnificPopup({
-          delegate: 'a',
-          type: 'image',
-          gallery: { enabled: true }
-        });
+        // $('.tm-gallery').magnificPopup({
+        //   delegate: 'a',
+        //   type: 'image',
+        //   gallery: { enabled: true }
+        // });
 
         // Gallery
-        $('.tm-gallery').slick({
-          dots: true,
-          infinite: false,
-          slidesToShow: 5,
-          slidesToScroll: 2,
-          responsive: [
-          {
-            breakpoint: 1199,
-            settings: {
-              slidesToShow: 4,
-              slidesToScroll: 2
-            }
-          },
-          {
-            breakpoint: 991,
-            settings: {
-              slidesToShow: 3,
-              slidesToScroll: 2
-            }
-          },
-          {
-            breakpoint: 767,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1
-            }
-          },
-          {
-            breakpoint: 480,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1
-            }
-          }
-        ]
-        });
+        // $('.tm-gallery').slick({
+        //   dots: true,
+        //   infinite: false,
+        //   slidesToShow: 5,
+        //   slidesToScroll: 2,
+        //   responsive: [
+        //   {
+        //     breakpoint: 1199,
+        //     settings: {
+        //       slidesToShow: 4,
+        //       slidesToScroll: 2
+        //     }
+        //   },
+        //   {
+        //     breakpoint: 991,
+        //     settings: {
+        //       slidesToShow: 3,
+        //       slidesToScroll: 2
+        //     }
+        //   },
+        //   {
+        //     breakpoint: 767,
+        //     settings: {
+        //       slidesToShow: 2,
+        //       slidesToScroll: 1
+        //     }
+        //   },
+        //   {
+        //     breakpoint: 480,
+        //     settings: {
+        //       slidesToShow: 1,
+        //       slidesToScroll: 1
+        //     }
+        //   }
+        // ]
+        // });
       });
     </script>
+
+
+
+    <!-- SCRIPT FOR CALCULATIONS -->
+    <script>
+      $(document).ready(function() {
+        console.log("Hello!!");
+        $('.form-check-input').click(function() { // on update of an answer
+            var value = $("input[type=radio][name=q1]:checked").val();
+            if (value) {
+              console.log(value);
+            }
+            else {
+              console.log('Nothing is selected');
+            }
+            var my_content2 = "content2";
+
+
+
+
+            // Our JSON request
+            var server_data = [
+              {"tag1": "content1", "tag1a": "content1a"},
+              {"tag2": my_content2}
+            ];
+
+
+            $.ajax({
+              type: "POST",
+              url: "/results",
+              data: JSON.stringify(server_data),
+              contentType: "application/json",
+              dataType: 'json',
+              success: function(result) {onSuccess(result)} 
+            });
+        })
+      });
+
+      // after a successful response from the python backend
+      function onSuccess(result) {
+        console.log("from onSuc1: " + result[0].res_tag1);
+        console.log("from onSuc1a: " + result[0].res_tag1a);
+        console.log("from onSuc2: " + result[1].res_tag2);
+      }
+
+    </script>
+
+
+
+
   </body>
 </html>
