@@ -10,6 +10,7 @@ zipp==3.8.0
 matplotlib==3.5.1
 numpy==1.22.3
 pandas==1.4.2
+pandas-datareader==0.10.0
 pyportfolioopt==1.5.2
 python-dateutil==2.8.2
 seaborn==0.11.2
