@@ -67,98 +67,79 @@ def get_results():
    if request.method == "POST":      
       req = request.get_json()
       # set answers from the survey
-      q1 = float(req[0]['ans1'])
-      q2 = float(req[0]['ans2'])
-      q3 = float(req[0]['ans3'])
-      q4 = float(req[0]['ans4'])
-      q5 = float(req[0]['ans5'])
-      q6 = float(req[0]['ans6'])
-      q7 = float(req[0]['ans7'])
-      q8 = float(req[0]['ans8'])
+      answer1 = float(req[0]['ans1'])
+      answer2 = float(req[0]['ans2'])
+      answer3 = float(req[0]['ans3'])
+      answer4 = float(req[0]['ans4'])
+      answer5 = float(req[0]['ans5'])
+      answer6 = float(req[0]['ans6'])
+      answer7 = float(req[0]['ans7'])
+      answer8 = float(req[0]['ans8'])
+      answer9 = float(req[0]['ans9'])
+      answer10 = float(req[0]['ans10'])
       
-      # get A value
-      th_score = q1 + q2
-      ra_score = q3 + q4 + q5 + q6 + q7 + q8
+      # determine risk aversion variables for each question
+      #q1
+      e1 = 5
+      v1 = 25
+      a1 = 2*(e1-float(answer1))/v1
 
-      type_investor = 'abc'
-      a_value = 0
+      #q2
+      e2 = 50
+      v2 = 2500
+      a2 = 2*(e2-float(answer2))/v2
 
-      if 1 < th_score < 2:
-         #type_investor = 'conservative investor'
-         a_value = 1
-      elif 3 < th_score < 10 | 0 < ra_score < 16:
-         #type_investor = 'conservative investor'
-         a_value = 1
-      elif th_score < 11 | 0 < ra_score < 16:
-         #type_investor = 'conservative investor'
-         a_value = 1
-      elif 3 < th_score < 11 | 17 < ra_score < 39:
-         #type_investor = 'moderately conservative investor'
-         a_value = 2
-      elif 3 < th_score < 5 | 40 < ra_score < 100:
-         #type_investor = 'moderately conservative investor'
-         a_value = 2
-      elif 6 < th_score < 11 | 40 < ra_score < 65:
-         #type_investor = 'moderate investor'
-         a_value = 3
-      elif 6 < th_score < 7 | 66 < ra_score < 87:
-         #type_investor = 'moderate investor'
-         a_value = 3
-      elif 8 < th_score < 11 | 66 < ra_score < 87:
-         #type_investor = 'moderately aggressive investor'
-         a_value = 4
-      elif 6 < th_score < 77 | 88 < ra_score < 100:
-         #type_investor = 'moderate investor'
-         a_value = 5
-      elif 8 < th_score < 10 | 88 < ra_score < 100:
-         #type_investor = 'moderately aggressive investor'
-         a_value = 4
-      elif th_score < 11 | 88 < ra_score < 100:
-         #type_investor = 'aggressive'
-         a_value = 5
-            
+      #q3
+      e3 = 500
+      v3 = 250000
+      a3 = 2*(e3-float(answer3))/v3
+
+      #q4
+      e4 = 1
+      v4 = 9
+      a4 = 2*(e4-float(answer4))/v4
+
+      #q5
+      e5 = 10
+      v5 = 900
+      a5 = 2*(e5-float(answer5))/v5
+
+      #q6
+      e6 = 100
+      v6 = 90000
+      a6 = 2*(e6-float(answer6))/v6
+
+      #q7
+      e7 = 75
+      v7 = 1875
+      a7 = 2*(e7-float(answer7))/v7
+
+      #q8
+      e8 = 25
+      v8 = 1875
+      a8 = 2*(e8-float(answer8))/v8
+
+      #q9
+      e9 = 60
+      v9 = 2400
+      a9 = 2*(e9-float(answer9))/v9
+
+      #q10
+      e10 = 600
+      v10 = 240000
+      a10 = 2*(e10-float(answer10))/v10
       
-
-      # if type_investor == 'conservative investor':
-      #    a_value = 1
-      # elif type_investor == 'moderately conservative investor':
-      #    a_value = 2
-      # elif type_investor == 'moderate investor':
-      #    a_value = 3
-      # elif type_investor == 'moderately aggressive investor':
-      #    a_value = 4
-      # else:
-      #    a_value = 5
+      # set risk aversion variable as mean of each question's a-value
+      risk_aversion = (a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8 + a9 + a10) / 10
    
       # at this point, we have our a value in a_value
       # begin the calculations
       
-      # create a list of ETFs we will use - multiple industries 
-      list_etfs = ['JMOM', 'VUG', 'VONV', 'IUSV', 'FREL', 'XSW', 'VHT', 'MGK', 'JVAL', 
-             'VOT', 'VIOG', 'NURE', 'GLD', 'XLU', 'TQQQ', 'VCR', 'FNCL', 'IFRA',
-            'PBD', 'RYT', 'FTEC', 'SCHI', 'SUSC', 'VTC', 'VCIT']
-      
-      # set start and end dates 
-      start  = datetime.now() - relativedelta(years=10)
-      end    = datetime.now() 
-      
-      # # download data
-      # etf_prices = pdr.get_data_yahoo(list_etfs, start=start, end=end)
-      # etf_prices = etf_prices.filter(like='Adj Close') 
-      # etf_prices.columns = list_etfs
-      
       # get etf_prices from data.csv
-      etf_prices = pd.read_csv('etf_prices/data.csv')
+      etf_prices = pd.read_csv('etf_prices/data1.csv')
       etf_prices.drop(['Date'], axis=1, inplace=True)
       
-      etf_data = etf_prices.describe().T
-      etf_data['Annualized Volatility'] = etf_data['std'] * math.sqrt(252)
-      
-      
-      
-      
       #download current risk free rate
-
       start2  = datetime.now() - relativedelta(years=1)
       end2    = datetime.now() 
       risk_free_rate = pdr.DataReader("IRLTLT01USM156N", "fred", start2,end2)
@@ -167,43 +148,42 @@ def get_results():
       
       e_returns = expected_returns.capm_return(etf_prices)#, span = 200)
    
+      # covariance matrix
+   
       # all this taken from https://builtin.com/data-science/portfolio-optimization-python
       etf_cm = risk_models.exp_cov(etf_prices)#,span=100)
    
-   
-   
-   
-   
-      # make and download plots
+      # efficient frontier generator
       
-      
+      #######################
+      # plotting code follows
+      #######################
+
       fig, ax = plt.subplots()
 
       # set up the EF object & dups for alt uses
+
       ef = EfficientFrontier(e_returns, etf_cm)
       ef_max_sharpe = copy.deepcopy(ef)
+      ef_min_vol = copy.deepcopy(ef)
 
       # plot the ports and the frontier
-      risk_range = np.linspace(0.05, 0.3, 100)
+
+      ef_min_vol.min_volatility()
+      ret_min_vol, std_min_vol, _ = ef_min_vol.portfolio_performance()
+
+      risk_range = np.linspace(std_min_vol, 0.8, 100)
       plotting.plot_efficient_frontier(ef, ef_param="risk", ef_param_range=risk_range,
                                        ax=ax, show_assets=True)
 
-      ########################################################
-      # TO FIGURE OUT:
-      # add a max util... Where is the RF asset tho???
-      ########################################################
-
       # Find+plot the tangency portfolio
+
       ef_max_sharpe.max_sharpe(risk_free_rate=risk_free_rate)
       ret_tangent, std_tangent, _ = ef_max_sharpe.portfolio_performance()
       ax.scatter(std_tangent, ret_tangent, marker="*", s=100, c="r", label="Max Sharpe")
+      print('Tangent:',ret_tangent, std_tangent)
 
-      #max utility
-      ef_max_util = EfficientFrontier(np.array([ret_tangent,risk_free_rate]), 
-                                       np.array([[std_tangent,0],[0,0]]))
-      ef_max_util.max_quadratic_utility(risk_aversion=2, market_neutral = False)
-      ret_maxU, std_maxU, _ = ef_max_util.portfolio_performance()
-      ax.scatter(std_maxU, ret_maxU, marker="*", s=100, c="b", label="Max Util")
+      # add the CML line
 
       point1 = [0, risk_free_rate]
       point2 = [std_tangent, ret_tangent]
@@ -211,10 +191,29 @@ def get_results():
       x_values = [point1[0], point2[0]]
       y_values = [point1[1], point2[1]]
 
-      plt.plot(x_values, y_values)
+      plt.plot(x_values, y_values,label='Capital Market Line')
+
+      # get the max utility port
+
+      mu_cml = np.array([risk_free_rate,ret_tangent])
+      cov_cml = np.array([[0,0],[0,std_tangent]])
+      ef_max_util = EfficientFrontier(mu_cml,cov_cml)               
+      ef_max_util.max_quadratic_utility(risk_aversion=risk_aversion)
+
+      # plot the max utility port
+      #      ef_max_util.portfolio_performance() fails (bc of RF asset? idk)
+      #      so compute the portfolio return on our own...
+      #      here is a hacky way to get the weights (%rf, %tan) out
+      weights_opt = ef_max_util.clean_weights()
+      weights_opt = np.array([e[1] for e in list(weights_opt.items())])
+      std_maxU = np.dot(np.array(x_values),weights_opt)
+      ret_maxU = np.dot(np.array(y_values),weights_opt)
+
+      ax.scatter(std_maxU, ret_maxU, marker="*", s=100, c="blue", label="Max Util")
+
 
       # Output
-      ax.set_title("Efficient Frontier with random portfolios")
+      ax.set_title("Efficient Frontier with ETFs")
       ax.legend()
       plt.tight_layout()
       # my_file = "ef_scatter.png"
@@ -228,14 +227,9 @@ def get_results():
       ax.clear()
       
       
-      
-      
-      
       # get optimal risky portfolio and optimal complete portfolio data
       optimal_risky_portf = pd.DataFrame(ef_max_sharpe.portfolio_performance(verbose=True))
       optimal_complete_portfolio = pd.DataFrame(ef_max_util.portfolio_performance(verbose=True))
-      
-      
       
       
       list_cweights = list(ef_max_util.clean_weights().values())
@@ -248,9 +242,11 @@ def get_results():
          list_piechart.append(i*list_cweights[1])
       list_piechart.append(list_cweights[0])
       
-      my_labels = ['JMOM', 'VUG', 'VONV', 'IUSV', 'FREL', 'XSW', 'VHT', 'MGK', 'JVAL', 
+      my_labels = ['SPY', 'IVV', 'VOO', 'SPLG', 'SPXL', 'SPXS', 'SPDN', 'SPUU', 'NSPI', 'SPXU', 'UPRO', 
+             'SDS', 'SH', 'SSO','JMOM', 'VUG', 'VONV', 'IUSV', 'FREL', 'XSW', 'VHT', 'MGK', 'JVAL', 
              'VOT', 'VIOG', 'NURE', 'GLD', 'XLU', 'TQQQ', 'VCR', 'FNCL', 'IFRA',
-            'PBD', 'RYT', 'FTEC', 'SCHI', 'SUSC', 'VTC', 'VCIT','Risk Free Asset: 10-year Government Bond']
+            'PBD', 'RYT', 'FTEC', 'SCHI', 'SUSC', 'VTC', 'VCIT','VEA','IEFA','EFA',
+             'SCHF','EFV','SCZ','SPDW','FNDF','EWC','DBEF','GSIE','Risk Free Asset: 10-year Government Bond']
 
       dataforpie = pd.DataFrame(
          {'Asset': my_labels,
@@ -260,7 +256,9 @@ def get_results():
       
       fig, ax = plt.subplots()
       
-      plt.pie(dataforpie["Weight"], labels = dataforpie["Asset"], startangle = 90, shadow = True, autopct='%1.1f%%')
+      # pie chart for complete portfolio
+      colors = sns.color_palette('Blues')[0:len(dataforpie["Weight"])]
+      plt.pie(dataforpie["Weight"], labels = dataforpie["Asset"], startangle = 90, shadow = True, autopct='%1.1f%%', colors=colors)
       plt.title('Breakdown of your portfolio')
       plt.savefig("static/img/compl_port_pie.png", dpi=200)
 
@@ -268,56 +266,15 @@ def get_results():
       plt.cla() 
       plt.clf()
       ax.clear()
-
-      # new_list = list(ef_max_util.clean_weights().values())
-      # my_labels = ["Risk Free Asset", "Risky Portfolio"]
-      # myexplode = [0.2, 0]
-
-      # plt.pie(new_list, labels=my_labels, startangle = 90, explode = myexplode, shadow = True, autopct='%1.1f%%')
-      # plt.title('Breakdown of your portfolio')
-      # # my_file = "compl_port_pie.png"
-      # # plt.savefig(os.path.join(my_path, my_file))
-      # plt.savefig("static/img/compl_port_pie.png", dpi=200)
-      
-      
-      # sharpe results
-      
-      sharpe_list = list(ef_max_sharpe.clean_weights().items())
-      sharpe_results = pd.DataFrame(sharpe_list)
-      list_names = ['Jpmorgan US Momentum Factor ETF','Vanguard Growth Index Fund ETF','Vanguard Russell 1000 Value Index Fund ETF'
-                  ,'iShares Core S&P US Value ETF', 'Fidelity MSCI Real Estate Index ETF','SPDR S&P Software & Services ETF',
-                  'Vanguard Health Care Index Fund ETF', 'Vanguard Mega Cap Growth ETF','Jpmorgan US Value Factor ETF',
-                  'Vanguard Mid-Cap Growth Index Fund ETF','Vanguard S&P Small-Cap 600 Growth Index','Nuveen Short-Term REIT ETF',
-                  'SPDR Gold Shares','Utilities Select Sector SPDR Fund','ProShares UltraPro QQQ','Vanguard Consumer Discretionary ETF',
-                  'Fidelity MSCI Financials Index ETF','iShares US Infrastructure ETF','Invesco Global Clean Energy ETF',
-                  'Invesco S&P 500 Eql Wght Technology ETF','Fidelity MSCI Information Technology Index ETF',
-                  'Schwab 5-10 Year Corporate Bond ETF','iShares ESG Aware USD Corporate Bond ETF','Vanguard Total Corporate Bond ETF',
-                  'Vanguard Intermediate-Term Corp Bond Idx Fund ETF']
-      sharpe_results["Etf Name"] = list_names
-            
-      
-      #pie chart for existing portfolio
-
-      new_list1 = sharpe_results[1]
-      my_labels1 = sharpe_results["Etf Name"]
-      
-      fig, ax = plt.subplots()
-
-      plt.pie(new_list1, labels=my_labels1, startangle = 90, shadow = True, autopct='%1.1f%%')
-      plt.title('Breakdown of your risky assets')
-      # my_file = "existing_port_pie.png"
-      # plt.savefig(os.path.join(my_path, my_file))
-      plt.savefig("static/img/existing_port_pie.png", dpi=200)
-      
-      # clear all plots
-      plt.cla() 
-      plt.clf()
-      ax.clear()
+   
+   
+   
+      # Return successful request
    
       # 0 - a value
       # 1 - opimal risky portfolio
       # 2 - optimal complete portfolio
-      results = [{'a_value': a_value},
+      results = [{'a_value': risk_aversion},
                  {'orp_ear': optimal_risky_portf[0][0], 'orp_annvol': optimal_risky_portf[0][1], 'orp_sr': optimal_risky_portf[0][2]},
                  {'ocp_ear': optimal_complete_portfolio[0][0], 'ocp_annvol': optimal_complete_portfolio[0][1], 'ocp_sr': optimal_complete_portfolio[0][2]}
                  ]
