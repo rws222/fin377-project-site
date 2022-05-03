@@ -1,3 +1,7 @@
-# Sample Web Application  
+# FIN 377 Final Project Website
 
-Web application written in Python using `flask` and deployed on Heroku. Detailed tutorial of the code in this repository can be found [here](https://towardsdatascience.com/create-and-deploy-a-simple-web-application-with-flask-and-heroku-103d867298eb).
+Website published at: https://frozen-everglades-44211.herokuapp.com
+
+This is the website repo for the Spring 2022 FIN 377 class' Wall Street Bets team final project. 
+
+By Lana Butorovic, Austen Johnson, Joseph Min, and Ryan Schmid
