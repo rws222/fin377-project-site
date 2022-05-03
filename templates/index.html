@@ -224,7 +224,7 @@
           </div>
         </div>
       </div>
-      <button type="button" id="results-btn" class="btn btn-primary">Get Results</button>
+      <a href="#results"><button type="button" id="results-btn" class="btn btn-primary">Get Results</button></a>
       <div class="row my_question my_border"></div>
     </section>
 
@@ -508,9 +508,6 @@
               $("#actual-results").addClass("d-none")
               $("#loading-screen").removeClass("d-none")
             }
-            // scroll to results
-            var elmntToView = document.getElementById("results");
-            elmntToView.scrollIntoView({behavior: "smooth"}); 
 
             // Get answers from questions
             var ans1 = $("#q1").val();
