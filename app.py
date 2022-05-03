@@ -37,6 +37,7 @@ from datetime import date
 import matplotlib.pyplot as plt 
 from dateutil.relativedelta import relativedelta
 import matplotlib
+matplotlib.use('Agg')
 from matplotlib.figure import Figure
 import math
 from pypfopt import risk_models
@@ -51,7 +52,7 @@ import os
 
 my_path = os.path.abspath(__file__)
 
-fig, ax = plt.subplots()
+#fig, ax = plt.subplots()
 
 app = Flask(__name__)
 
@@ -63,7 +64,7 @@ def home():
 
 @app.route('/results', methods=['POST', 'GET'])
 def get_results():
-   if request.method == "POST":
+   if request.method == "POST":      
       req = request.get_json()
       # set answers from the survey
       q1 = float(req[0]['ans1'])
@@ -80,42 +81,54 @@ def get_results():
       ra_score = q3 + q4 + q5 + q6 + q7 + q8
 
       type_investor = 'abc'
-
-      if 1 < th_score < 2:
-         type_investor = 'conservative investor'
-      elif 3 < th_score < 10 & 0 < ra_score < 16:
-         type_investor = 'conservative investor'
-      elif th_score < 11 & 0 < ra_score < 16:
-         type_investor = 'conservative investor'
-      elif 3 < th_score < 11 & 17 < ra_score < 39:
-         type_investor = 'moderately conservative investor'
-      elif 3 < th_score < 5 & 40 < ra_score < 100:
-         type_investor = 'moderately conservative investor'
-      elif 6 < th_score < 11 & 40 < ra_score < 65:
-         type_investor = 'moderate investor'
-      elif 6 < th_score < 7 & 66 < ra_score < 87:
-         type_investor = 'moderate investor'
-      elif 8 < th_score < 11 & 66 < ra_score < 87:
-         type_investor = 'moderately aggressive investor'
-      elif 6 < th_score < 77 & 88 < ra_score < 100:
-         type_investor = 'moderate investor'
-      elif 8 < th_score < 10 & 88 < ra_score < 100:
-         type_investor = 'moderately aggressive investor'
-      elif th_score < 11 & 88 < ra_score < 100:
-         type_investor = 'aggressive'
-            
       a_value = 0
 
-      if type_investor == 'conservative investor':
+      if 1 < th_score < 2:
+         #type_investor = 'conservative investor'
          a_value = 1
-      elif type_investor == 'moderately conservative investor':
+      elif 3 < th_score < 10 | 0 < ra_score < 16:
+         #type_investor = 'conservative investor'
+         a_value = 1
+      elif th_score < 11 | 0 < ra_score < 16:
+         #type_investor = 'conservative investor'
+         a_value = 1
+      elif 3 < th_score < 11 | 17 < ra_score < 39:
+         #type_investor = 'moderately conservative investor'
          a_value = 2
-      elif type_investor == 'moderate investor':
+      elif 3 < th_score < 5 | 40 < ra_score < 100:
+         #type_investor = 'moderately conservative investor'
+         a_value = 2
+      elif 6 < th_score < 11 | 40 < ra_score < 65:
+         #type_investor = 'moderate investor'
          a_value = 3
-      elif type_investor == 'moderately aggressive investor':
+      elif 6 < th_score < 7 | 66 < ra_score < 87:
+         #type_investor = 'moderate investor'
+         a_value = 3
+      elif 8 < th_score < 11 | 66 < ra_score < 87:
+         #type_investor = 'moderately aggressive investor'
          a_value = 4
-      else:
+      elif 6 < th_score < 77 | 88 < ra_score < 100:
+         #type_investor = 'moderate investor'
          a_value = 5
+      elif 8 < th_score < 10 | 88 < ra_score < 100:
+         #type_investor = 'moderately aggressive investor'
+         a_value = 4
+      elif th_score < 11 | 88 < ra_score < 100:
+         #type_investor = 'aggressive'
+         a_value = 5
+            
+      
+
+      # if type_investor == 'conservative investor':
+      #    a_value = 1
+      # elif type_investor == 'moderately conservative investor':
+      #    a_value = 2
+      # elif type_investor == 'moderate investor':
+      #    a_value = 3
+      # elif type_investor == 'moderately aggressive investor':
+      #    a_value = 4
+      # else:
+      #    a_value = 5
    
       # at this point, we have our a value in a_value
       # begin the calculations
@@ -129,13 +142,20 @@ def get_results():
       start  = datetime.now() - relativedelta(years=10)
       end    = datetime.now() 
       
-      # download data
-      etf_prices = pdr.get_data_yahoo(list_etfs, start=start, end=end)
-      etf_prices = etf_prices.filter(like='Adj Close') 
-      etf_prices.columns = list_etfs
+      # # download data
+      # etf_prices = pdr.get_data_yahoo(list_etfs, start=start, end=end)
+      # etf_prices = etf_prices.filter(like='Adj Close') 
+      # etf_prices.columns = list_etfs
+      
+      # get etf_prices from data.csv
+      etf_prices = pd.read_csv('etf_prices/data.csv')
+      etf_prices.drop(['Date'], axis=1, inplace=True)
       
       etf_data = etf_prices.describe().T
       etf_data['Annualized Volatility'] = etf_data['std'] * math.sqrt(252)
+      
+      
+      
       
       #download current risk free rate
 
@@ -157,7 +177,7 @@ def get_results():
       # make and download plots
       
       
-      # fig, ax = plt.subplots()
+      fig, ax = plt.subplots()
 
       # set up the EF object & dups for alt uses
       ef = EfficientFrontier(e_returns, etf_cm)
@@ -199,8 +219,13 @@ def get_results():
       plt.tight_layout()
       # my_file = "ef_scatter.png"
       # plt.savefig(os.path.join(my_path, my_file))
-      plt.savefig("img/ef_scatter.png", dpi=200)
+      plt.savefig("static/img/ef_scatter.png", dpi=200)
       #plt.show()
+      
+      # clear plot
+      plt.cla() 
+      plt.clf()
+      ax.clear()
       
       
       
@@ -213,17 +238,46 @@ def get_results():
       
       
       
+      list_cweights = list(ef_max_util.clean_weights().values())
+      list_sweights = list(ef_max_sharpe.clean_weights().values())
+      
       # pie chart for complete portfolio
 
-      new_list = list(ef_max_util.clean_weights().values())
-      my_labels = ["Risk Free Asset", "Risky Portfolio"]
-      myexplode = [0.2, 0]
+      list_piechart = []
+      for i in list_sweights:
+         list_piechart.append(i*list_cweights[1])
+      list_piechart.append(list_cweights[0])
+      
+      my_labels = ['JMOM', 'VUG', 'VONV', 'IUSV', 'FREL', 'XSW', 'VHT', 'MGK', 'JVAL', 
+             'VOT', 'VIOG', 'NURE', 'GLD', 'XLU', 'TQQQ', 'VCR', 'FNCL', 'IFRA',
+            'PBD', 'RYT', 'FTEC', 'SCHI', 'SUSC', 'VTC', 'VCIT','Risk Free Asset: 10-year Government Bond']
 
-      plt.pie(new_list, labels=my_labels, startangle = 90, explode = myexplode, shadow = True, autopct='%1.1f%%')
+      dataforpie = pd.DataFrame(
+         {'Asset': my_labels,
+         'Weight': list_piechart
+         })
+      dataforpie = dataforpie.query('Weight > 0.01')
+      
+      fig, ax = plt.subplots()
+      
+      plt.pie(dataforpie["Weight"], labels = dataforpie["Asset"], startangle = 90, shadow = True, autopct='%1.1f%%')
       plt.title('Breakdown of your portfolio')
-      # my_file = "compl_port_pie.png"
-      # plt.savefig(os.path.join(my_path, my_file))
-      plt.savefig("img/compl_port_pie.png", dpi=200)
+      plt.savefig("static/img/compl_port_pie.png", dpi=200)
+
+      # clear plot
+      plt.cla() 
+      plt.clf()
+      ax.clear()
+
+      # new_list = list(ef_max_util.clean_weights().values())
+      # my_labels = ["Risk Free Asset", "Risky Portfolio"]
+      # myexplode = [0.2, 0]
+
+      # plt.pie(new_list, labels=my_labels, startangle = 90, explode = myexplode, shadow = True, autopct='%1.1f%%')
+      # plt.title('Breakdown of your portfolio')
+      # # my_file = "compl_port_pie.png"
+      # # plt.savefig(os.path.join(my_path, my_file))
+      # plt.savefig("static/img/compl_port_pie.png", dpi=200)
       
       
       # sharpe results
@@ -246,13 +300,19 @@ def get_results():
 
       new_list1 = sharpe_results[1]
       my_labels1 = sharpe_results["Etf Name"]
+      
+      fig, ax = plt.subplots()
 
       plt.pie(new_list1, labels=my_labels1, startangle = 90, shadow = True, autopct='%1.1f%%')
       plt.title('Breakdown of your risky assets')
       # my_file = "existing_port_pie.png"
       # plt.savefig(os.path.join(my_path, my_file))
-      plt.savefig("img/existing_port_pie.png", dpi=200)
+      plt.savefig("static/img/existing_port_pie.png", dpi=200)
       
+      # clear all plots
+      plt.cla() 
+      plt.clf()
+      ax.clear()
    
       # 0 - a value
       # 1 - opimal risky portfolio

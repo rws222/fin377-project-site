@@ -36,9 +36,9 @@
               <li class="nav-item">
                   <a class="nav-link tm-nav-link" href="#risk_survey">Risk Survey</a>
               </li>
-              <li class="nav-item">
+              <!--<li class="nav-item">
                   <a class="nav-link tm-nav-link" href="#preferences">Preferences</a>
-              </li>
+              </li>-->
               <li class="nav-item">
                   <a class="nav-link tm-nav-link" href="#results">Results</a>
               </li>                    
@@ -83,6 +83,36 @@
           </div>            
         </div>
       <div class="container-lg flex-column d-flex justify-content-center align-items-center">
+      <!--Question 1-->
+      <!-- <div class="row my_question mb-4">
+        <div>
+          <div class="text-left">
+            <h3 class="tm-text-secondary">If you have a 50% of getting $0 and 50% chance of getting $10, how much money would you bet?</h3>
+          </div>
+          <div>
+            <div class="form-check">
+              <input type="range" class="form-range w-50" min="2.5" max="5" step="0.01" id="q1" oninput="this.nextElementSibling.value = '$' + this.value">
+              <output class="ml-2">$3.75</output>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <!--Question 2-->
+      <!-- <div class="row my_question mb-4">
+        <div>
+          <div class="text-left">
+            <h3 class="tm-text-secondary">If you have a 50% of getting $0 and 50% chance of getting $100, how much money would you bet?</h3>
+          </div>
+          <div>
+            <div class="form-check">
+              <input type="range" class="form-range w-50" min="25" max="50" step="0.1" id="q2" oninput="this.nextElementSibling.value = '$' + this.value">
+              <output class="ml-2">$37.5</output>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+
       <!--Question 1-->
       <div class="row my_question mb-4">
         <div>
@@ -380,6 +410,34 @@
               Here are the results of your portfolio recommendation. 
             </p>
         </div>            
+      </div>
+      <!--the screen on page load-->
+      <div id="initial-screen" class="row">
+        <div class="text-center col-12">
+          <h3 class="tm-text-secondary">Fill out the risk survey and click "Get Results" to view your portfolio.</h3>
+        </div>
+      </div>
+      <!--the loading screen-->
+      <div id="loading-screen" class="row d-none">
+        <div class="text-center col-12">
+          <h3 class="tm-text-secondary my_loading">Loading...</h3>
+        </div>
+      </div>
+      <!--the actual results you get from running the code-->
+      <div id="actual-results" class="d-none">
+        <div class="row actual-results">
+          <div class="col-xl-4">
+              <img src="{{ url_for('static',filename='img/ef_scatter.png') }}" alt="Image" id="plot-1" class="img-fluid my_plot tm-intro-img mx-auto d-block" />
+          </div>
+          <div class="col-xl-4">
+            <img src="{{ url_for('static',filename='img/compl_port_pie.png') }}" alt="Image" id="plot-2" class="img-fluid my_plot tm-intro-img mx-auto d-block" />
+          </div>
+          <div class="col-xl-4">
+            <img src="{{ url_for('static',filename='img/existing_port_pie.png') }}" alt="Image" id="plot-3" class="img-fluid my_plot tm-intro-img mx-auto d-block" />
+          </div>
+        </div>
+        <div class="row">
+        </div>
       </div>
       <div class="row my_question my_border" style="background-color: #fff"></div>
     </div> 
@@ -785,11 +843,27 @@
 
 
 
+
+
+
+
+
     <!-- SCRIPT FOR CALCULATIONS -->
     <script>
       $(document).ready(function() {
         console.log("Hello!!");
         $("#results-btn").click(function() { // on update of an answer
+            // if no results have been run, hide initial results message and show loading message 
+            if (!$("#initial-screen").hasClass("d-none")) {
+              $("#initial-screen").addClass("d-none")
+              $("#loading-screen").removeClass("d-none")
+            }
+            // if results have been run, hide results and show loading message 
+            if (!$("#actual-results").hasClass("d-none")) {
+              $("#actual-results").addClass("d-none")
+              $("#loading-screen").removeClass("d-none")
+            }
+
             // Get answers from questions
             var ans1 = $("input[type=radio][name=q1]:checked").val();
             var ans2 = $("input[type=radio][name=q2]:checked").val();
@@ -799,6 +873,8 @@
             var ans6 = $("input[type=radio][name=q6]:checked").val();
             var ans7 = $("input[type=radio][name=q7]:checked").val();
             var ans8 = $("input[type=radio][name=q8]:checked").val();
+
+            console.log(ans8)
 
             // Our JSON request
             var server_data = [
@@ -826,12 +902,36 @@
 
       // after a successful response from the python backend
       function onSuccess(result) {
+        
+        // hide loading message and show results
+        $("#loading-screen").addClass("d-none")
+        $("#actual-results").removeClass("d-none")
+        // reload images
+        d = new Date();
+        $("#plot-1").attr("src", "{{ url_for('static',filename='img/ef_scatter.png') }}" + "?" + d.getTime());
+        $("#plot-2").attr("src", "{{ url_for('static',filename='img/compl_port_pie.png') }}" + "?" + d.getTime());
+        $("#plot-3").attr("src", "{{ url_for('static',filename='img/existing_port_pie.png') }}" + "?" + d.getTime());
+
+
+        // $("#plot-1").removeAttr("src").attr("src", "{{ url_for('static',filename='img/ef_scatter.png') }}");
+        // $("#plot-2").removeAttr("src").attr("src", "{{ url_for('static',filename='img/compl_port_pie.png') }}");
+        // $("#plot-3").removeAttr("src").attr("src", "{{ url_for('static',filename='img/existing_port_pie.png') }}");
+
+
         console.log(result);
       }
 
     </script>
 
-
+<!-- <div class="col-xl-4">
+  <img src="{{ url_for('static',filename='img/ef_scatter.png') }}" alt="Image" class="img-fluid my_plot tm-intro-img mx-auto d-block" />
+</div>
+<div class="col-xl-4">
+<img src="{{ url_for('static',filename='img/compl_port_pie.png') }}" alt="Image" class="img-fluid my_plot tm-intro-img mx-auto d-block" />
+</div>
+<div class="col-xl-4">
+<img src="{{ url_for('static',filename='img/existing_port_pie.png') }}" alt="Image" class="img-fluid my_plot tm-intro-img mx-auto d-block" />
+</div> -->
 
 
   </body>

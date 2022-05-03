@@ -26,6 +26,20 @@ https://templatemo.com/tm-525-the-town
   margin-top: 50px;
 }
 
+.tm-text-secondary {
+  font-size: large;
+}
+
+.my_plot {
+  width: 100%;
+  max-width: 700px;
+  margin-top: 20px;
+}
+
+.my_loading {
+  font-size: 40px;
+}
+
 
 
 
