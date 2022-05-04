@@ -51,7 +51,7 @@
         <div class="tm-hero-text-container-inner">
             <h2 class="tm-hero-title">Portfolio Recommender</h2>
             <p class="tm-hero-subtitle">
-              This site will recommend a portfolio of S&P 500 stocks and other securities based on how you answer some questions.
+              This site will recommend a portfolio of ETFs that range across industries based on how you answer some questions.
               <br /><br />by Team Wall Street Bets
             </p>
         </div>        
@@ -236,7 +236,10 @@
         <div class="row">
           <div class="text-center col-12">
               <h2 class="tm-text-primary tm-section-title mb-4">Results</h2>
-              <p class="mx-auto tm-work-description mb-5">
+              <p id="under_res_load" class="mx-auto tm-work-description mb-5 d-none">
+                Your portfolio recommendation will be displayed shortly. 
+              </p>
+              <p id="under_res_done" class="mx-auto tm-work-description mb-5 d-none">
                 Here are the results of your portfolio recommendation. 
               </p>
           </div>            
@@ -274,6 +277,14 @@
 
     <!-- Contact -->
     <section id="contact" class="tm-parallax-2">
+      <footer class="text-center small tm-footer">
+        <p class="mb-0">
+          If you want to learn more about Modern Portfolio Theory, visit <a style="color: white" target="_blank" href="https://www.forbes.com/advisor/investing/modern-portfolio-theory/">https://www.forbes.com/advisor/investing/modern-portfolio-theory/</a>
+        </p>
+        <p class="mb-0">
+          Project by Lana Butorovic, Austen Johnson, Joseph Min, and Ryan Schmid
+        </p>
+      </footer>
     </section>
 
 
@@ -502,11 +513,14 @@
             if (!$("#initial-screen").hasClass("d-none")) {
               $("#initial-screen").addClass("d-none")
               $("#loading-screen").removeClass("d-none")
+              $("#under_res_load").removeClass("d-none")
             }
             // if results have been run, hide results and show loading message 
             if (!$("#actual-results").hasClass("d-none")) {
               $("#actual-results").addClass("d-none")
               $("#loading-screen").removeClass("d-none")
+              $("#under_res_done").addClass("d-none")
+              $("#under_res_load").removeClass("d-none")
             }
 
             // Get answers from questions
@@ -553,6 +567,8 @@
         // hide loading message and show results
         $("#loading-screen").addClass("d-none")
         $("#actual-results").removeClass("d-none")
+        $("#under_res_load").addClass("d-none")
+        $("#under_res_done").removeClass("d-none")
         // reload images
         d = new Date();
         $("#plot-1").attr("src", "{{ url_for('static',filename='img/ef_scatter.png') }}" + "?" + d.getTime());

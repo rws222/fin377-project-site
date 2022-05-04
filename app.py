@@ -130,7 +130,12 @@ def get_results():
       a10 = 2*(e10-float(answer10))/v10
       
       # set risk aversion variable as mean of each question's a-value
+      
       risk_aversion = (a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8 + a9 + a10) / 10
+      if risk_aversion < 0.000001: # avoid the float error when risk_aversion is too small
+         risk_aversion = 0.000001
+         
+      print(risk_aversion)
    
       # at this point, we have our a value in a_value
       # begin the calculations
