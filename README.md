@@ -4,7 +4,9 @@ This is the website repo for the Spring 2022 FIN 377 class' Wall Street Bets tea
 
 By Lana Butorovic, Austen Johnson, Joseph Min, and Ryan Schmid
 
-With the phasing out of the free tier of Heroku, a newer version of this site was made and published by Prof. Don Bowen. 
+## New version
+
+The original version of this site was hosted on Heroku. With the phasing out of the free tier of Heroku, a newer version was made and published by Prof. Don Bowen. 
 
 Website: https://donbowen-portfolio-frontier-streamlit-dashboard-app-yentvd.streamlit.app
 
