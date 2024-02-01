@@ -1,6 +1,6 @@
 # FIN 377 Final Project Website
 
-This is the website repo for the Spring 2022 FIN 377 class' Wall Street Bets team final project. 
+This is the website repo for the Spring 2022 FIN 377 class' Wall Street Bets team final project. The website has the user complete a risk aversion assessment which then determines their optimal investment portfolio using CAPM.
 
 By Lana Butorovic, Austen Johnson, Joseph Min, and Ryan Schmid
 
